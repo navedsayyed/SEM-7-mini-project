@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P Energy Trading Platform</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.2.2/web3.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .header h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .wallet-section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .stat-card h3 {
+            color: #667eea;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .stat-card p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            color: #666;
+            transition: all 0.3s;
+        }
+
+        .tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .listings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .listing-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .listing-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .listing-card h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .listing-info {
+            margin-bottom: 15px;
+        }
+
+        .listing-info p {
+            margin: 8px 0;
+            color: #666;
+        }
+
+        .listing-info strong {
+            color: #333;
+        }
+
+        .transactions-list {
+            margin-top: 20px;
+        }
+
+        .transaction-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .transaction-card h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .transaction-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+
+        .transaction-details p {
+            color: #666;
+            font-size: 0.9em;
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .alert-info {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .address-display {
+            font-family: monospace;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 5px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚡ P2P Energy Trading Platform</h1>
+            <p>Decentralized Energy Marketplace powered by Blockchain</p>
+        </div>
+
+        <div class="wallet-section">
+            <div id="walletStatus">
+                <button id="connectWallet" class="btn">Connect Wallet</button>
+                <p style="margin-top: 10px; color: #666;">Connect your MetaMask wallet to get started</p>
+            </div>
+            <div id="walletConnected" style="display: none;">
+                <div style="margin-bottom: 20px;">
+                    <strong>Connected Account:</strong>
+                    <div class="address-display" id="accountAddress"></div>
+                </div>
+                <div class="stats-grid" id="userStats"></div>
+                <button id="getTokensBtn" class="btn btn-success" style="margin-top: 20px;">Get Initial Tokens (1000 ETG)</button>
+            </div>
+        </div>
+
+        <div id="mainContent" style="display: none;">
+            <div class="tabs">
+                <button class="tab active" data-tab="marketplace">🛒 Marketplace</button>
+                <button class="tab" data-tab="list">📋 List Energy</button>
+                <button class="tab" data-tab="transactions">📊 My Transactions</button>
+            </div>
+
+            <div id="marketplace" class="tab-content active">
+                <h2 style="margin-bottom: 20px; color: #333;">Available Energy Listings</h2>
+                <button id="refreshListings" class="btn">🔄 Refresh Listings</button>
+                <div id="listingsContainer" class="listings-grid"></div>
+            </div>
+
+            <div id="list" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #333;">List Your Energy</h2>
+                <form id="listEnergyForm">
+                    <div class="form-group">
+                        <label>Energy Amount (kWh):</label>
+                        <input type="number" id="energyAmount" placeholder="e.g., 100" required min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>Price per kWh (ETG tokens):</label>
+                        <input type="number" id="pricePerUnit" placeholder="e.g., 5" required min="1">
+                    </div>
+                    <button type="submit" class="btn">List Energy for Sale</button>
+                </form>
+            </div>
+
+            <div id="transactions" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #333;">Transaction History</h2>
+                <button id="refreshTransactions" class="btn">🔄 Refresh</button>
+                <div id="transactionsContainer" class="transactions-list"></div>
+            </div>
+        </div>
+
+        <div id="alertContainer"></div>
+    </div>
+
+    <script>
+        let web3;
+        let contract;
+        let account;
+        
+        // Replace with your deployed contract address
+        const CONTRACT_ADDRESS = "0x3245869D42Db39D16349E0349fF64d853ad447Fc";
+        
+        // Contract ABI
+        const CONTRACT_ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"listingId","type":"uint256"},{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"}],"name":"EnergyListed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"transactionId","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"listingId","type":"uint256"},{"indexed":true,"internalType":"address","name":"consumer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EnergyPurchased","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"listingId","type":"uint256"}],"name":"ListingCancelled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"TokensReceived","type":"event"},{"inputs":[],"name":"INITIAL_TOKENS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingId","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"buyEnergy","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingId","type":"uint256"}],"name":"cancelListing","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"energyBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"energyListings","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"producer","type":"address"},{"internalType":"uint256","name":"energyAmount","type":"uint256"},{"internalType":"uint256","name":"pricePerUnit","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getActiveListings","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"producer","type":"address"},{"internalType":"uint256","name":"energyAmount","type":"uint256"},{"internalType":"uint256","name":"pricePerUnit","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"internalType":"struct EnergyTrading.EnergyListing[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getInitialTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserStats","outputs":[{"internalType":"uint256","name":"tokens","type":"uint256"},{"internalType":"uint256","name":"energy","type":"uint256"},{"internalType":"uint256","name":"listingsCreated","type":"uint256"},{"internalType":"uint256","name":"purchasesMade","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserTransactions","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"uint256","name":"listingId","type":"uint256"},{"internalType":"address","name":"producer","type":"address"},{"internalType":"address","name":"consumer","type":"address"},{"internalType":"uint256","name":"energyAmount","type":"uint256"},{"internalType":"uint256","name":"totalPrice","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"internalType":"struct EnergyTrading.Transaction[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_energyAmount","type":"uint256"},{"internalType":"uint256","name":"_pricePerUnit","type":"uint256"}],"name":"listEnergy","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"listingCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"tokenBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"transactionCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"transactions","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"uint256","name":"listingId","type":"uint256"},{"internalType":"address","name":"producer","type":"address"},{"internalType":"address","name":"consumer","type":"address"},{"internalType":"uint256","name":"energyAmount","type":"uint256"},{"internalType":"uint256","name":"totalPrice","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"stateMutability":"view","type":"function"}];
+
+        // Initialize
+        async function init() {
+            if (typeof window.ethereum !== 'undefined') {
+                web3 = new Web3(window.ethereum);
+                document.getElementById('connectWallet').addEventListener('click', connectWallet);
+                document.getElementById('getTokensBtn').addEventListener('click', getInitialTokens);
+                document.getElementById('listEnergyForm').addEventListener('submit', listEnergy);
+                document.getElementById('refreshListings').addEventListener('click', loadListings);
+                document.getElementById('refreshTransactions').addEventListener('click', loadTransactions);
+                
+                // Tab switching
+                document.querySelectorAll('.tab').forEach(tab => {
+                    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+                });
+            } else {
+                showAlert('Please install MetaMask to use this application!', 'error');
+            }
+        }
+
+        async function connectWallet() {
+            try {
+                const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
+                account = accounts[0];
+                
+                contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+                
+                document.getElementById('walletStatus').style.display = 'none';
+                document.getElementById('walletConnected').style.display = 'block';
+                document.getElementById('mainContent').style.display = 'block';
+                document.getElementById('accountAddress').textContent = account;
+                
+                await loadUserStats();
+                await loadListings();
+                
+                showAlert('Wallet connected successfully!', 'success');
+            } catch (error) {
+                showAlert('Error connecting wallet: ' + error.message, 'error');
+            }
+        }
+
+        async function getInitialTokens() {
+            try {
+                await contract.methods.getInitialTokens().send({ from: account });
+                showAlert('Successfully received 1000 ETG tokens!', 'success');
+                await loadUserStats();
+            } catch (error) {
+                showAlert('Error getting tokens: ' + error.message, 'error');
+            }
+        }
+
+        async function loadUserStats() {
+            try {
+                const stats = await contract.methods.getUserStats(account).call();
+                document.getElementById('userStats').innerHTML = `
+                    <div class="stat-card">
+                        <h3>${web3.utils.fromWei(stats.tokens, 'ether')}</h3>
+                        <p>ETG Tokens</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${stats.energy}</h3>
+                        <p>Energy Owned (kWh)</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${stats.listingsCreated}</h3>
+                        <p>Listings Created</p>
+                    </div>
+                    <div class="stat-card">
+                        <h3>${stats.purchasesMade}</h3>
+                        <p>Purchases Made</p>
+                    </div>
+                `;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        async function listEnergy(e) {
+            e.preventDefault();
+            try {
+                const amount = document.getElementById('energyAmount').value;
+                const price = web3.utils.toWei(document.getElementById('pricePerUnit').value, 'ether');
+                
+                await contract.methods.listEnergy(amount, price).send({ from: account });
+                showAlert('Energy listed successfully!', 'success');
+                
+                document.getElementById('listEnergyForm').reset();
+                await loadListings();
+                await loadUserStats();
+            } catch (error) {
+                showAlert('Error listing energy: ' + error.message, 'error');
+            }
+        }
+
+        async function loadListings() {
+            try {
+                const listings = await contract.methods.getActiveListings().call();
+                const container = document.getElementById('listingsContainer');
+                
+                if (listings.length === 0) {
+                    container.innerHTML = '<p class="loading">No active listings available</p>';
+                    return;
+                }
+                
+                container.innerHTML = listings.map(listing => `
+                    <div class="listing-card">
+                        <h3>Listing #${listing.id}</h3>
+                        <div class="listing-info">
+                            <p><strong>Producer:</strong> ${listing.producer.substring(0, 10)}...</p>
+                            <p><strong>Energy:</strong> ${listing.energyAmount} kWh</p>
+                            <p><strong>Price:</strong> ${web3.utils.fromWei(listing.pricePerUnit, 'ether')} ETG/kWh</p>
+                            <p><strong>Total Cost:</strong> ${(listing.energyAmount * web3.utils.fromWei(listing.pricePerUnit, 'ether')).toFixed(2)} ETG</p>
+                        </div>
+                        ${listing.producer.toLowerCase() === account.toLowerCase() 
+                            ? '<button class="btn btn-secondary" onclick="cancelListing(' + listing.id + ')">Cancel Listing</button>'
+                            : '<button class="btn" onclick="buyEnergy(' + listing.id + ', ' + listing.energyAmount + ')">Buy Energy</button>'
+                        }
+                    </div>
+                `).join('');
+            } catch (error) {
+                showAlert('Error loading listings: ' + error.message, 'error');
+            }
+        }
+
+        async function buyEnergy(listingId, maxAmount) {
+            const amount = prompt(`Enter amount to buy (max ${maxAmount} kWh):`);
+            if (!amount || amount <= 0 || amount > maxAmount) return;
+            
+            try {
+                await contract.methods.buyEnergy(listingId, amount).send({ from: account });
+                showAlert('Energy purchased successfully!', 'success');
+                await loadListings();
+                await loadUserStats();
+            } catch (error) {
+                showAlert('Error buying energy: ' + error.message, 'error');
+            }
+        }
+
+        async function cancelListing(listingId) {
+            if (!confirm('Are you sure you want to cancel this listing?')) return;
+            
+            try {
+                await contract.methods.cancelListing(listingId).send({ from: account });
+                showAlert('Listing cancelled successfully!', 'success');
+                await loadListings();
+                await loadUserStats();
+            } catch (error) {
+                showAlert('Error cancelling listing: ' + error.message, 'error');
+            }
+        }
+
+        async function loadTransactions() {
+            try {
+                const transactions = await contract.methods.getUserTransactions(account).call();
+                const container = document.getElementById('transactionsContainer');
+                
+                if (transactions.length === 0) {
+                    container.innerHTML = '<p class="loading">No transactions found</p>';
+                    return;
+                }
+                
+                container.innerHTML = transactions.map(tx => `
+                    <div class="transaction-card">
+                        <h4>Transaction #${tx.id}</h4>
+                        <div class="transaction-details">
+                            <p><strong>Type:</strong> ${tx.producer.toLowerCase() === account.toLowerCase() ? 'Sale' : 'Purchase'}</p>
+                            <p><strong>Energy:</strong> ${tx.energyAmount} kWh</p>
+                            <p><strong>Price:</strong> ${web3.utils.fromWei(tx.totalPrice, 'ether')} ETG</p>
+                            <p><strong>Date:</strong> ${new Date(tx.timestamp * 1000).toLocaleString()}</p>
+                            <p><strong>Producer:</strong> ${tx.producer.substring(0, 20)}...</p>
+                            <p><strong>Consumer:</strong> ${tx.consumer.substring(0, 20)}...</p>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                showAlert('Error loading transactions: ' + error.message, 'error');
+            }
+        }
+
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            
+            document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+            document.getElementById(tabName).classList.add('active');
+            
+            if (tabName === 'marketplace') loadListings();
+            if (tabName === 'transactions') loadTransactions();
+        }
+
+        function showAlert(message, type) {
+            const alertDiv = document.createElement('div');
+            alertDiv.className = `alert alert-${type}`;
+            alertDiv.textContent = message;
+            
+            const container = document.getElementById('alertContainer');
+            container.appendChild(alertDiv);
+            
+            setTimeout(() => alertDiv.remove(), 5000);
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', init);
+    </script>
+</body>
+</html>
