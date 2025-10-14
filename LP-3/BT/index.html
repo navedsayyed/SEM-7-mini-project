@@ -3,54 +3,33 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P Energy Trading Platform</title>
+    <title>Energy Trading Platform - Optimized</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/web3/4.2.2/web3.min.js"></script>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
             padding: 20px;
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
+        .container { max-width: 1400px; margin: 0 auto; }
         .header {
             background: rgba(255, 255, 255, 0.95);
             padding: 30px;
             border-radius: 15px;
             margin-bottom: 30px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-
-        .header h1 {
-            color: #667eea;
-            margin-bottom: 10px;
-            font-size: 2.5em;
-        }
-
-        .header p {
-            color: #666;
-            font-size: 1.1em;
-        }
-
+        .header h1 { color: #667eea; margin-bottom: 10px; font-size: 2.5em; }
+        .header p { color: #666; font-size: 1.1em; }
         .wallet-section {
             background: rgba(255, 255, 255, 0.95);
             padding: 20px;
             border-radius: 15px;
             margin-bottom: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
         .btn {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
@@ -60,219 +39,120 @@
             cursor: pointer;
             font-size: 16px;
             font-weight: 600;
-            transition: transform 0.2s, box-shadow 0.2s;
+            transition: transform 0.2s;
+            margin: 5px;
         }
-
-        .btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
-        }
-
-        .btn:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-
-        .btn-success {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-
+        .btn:hover { transform: translateY(-2px); }
+        .btn-secondary { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); }
+        .btn-success { background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); }
+        .btn-small { padding: 8px 20px; font-size: 14px; }
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 15px;
             margin-top: 20px;
         }
-
         .stat-card {
             background: white;
             padding: 20px;
             border-radius: 10px;
             text-align: center;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
         }
-
-        .stat-card h3 {
-            color: #667eea;
-            font-size: 2em;
-            margin-bottom: 10px;
-        }
-
-        .stat-card p {
-            color: #666;
-            font-size: 0.9em;
-        }
-
+        .stat-card h3 { color: #667eea; font-size: 1.8em; margin-bottom: 10px; }
+        .stat-card p { color: #666; font-size: 0.85em; }
         .tabs {
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
+            flex-wrap: wrap;
         }
-
         .tab {
             flex: 1;
+            min-width: 150px;
             padding: 15px;
             background: rgba(255, 255, 255, 0.9);
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 600;
             color: #666;
             transition: all 0.3s;
         }
-
         .tab.active {
             background: white;
             color: #667eea;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
         }
-
         .tab-content {
             display: none;
             background: rgba(255, 255, 255, 0.95);
             padding: 30px;
             border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
-
-        .tab-content.active {
-            display: block;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
+        .tab-content.active { display: block; }
+        .form-group { margin-bottom: 20px; }
         .form-group label {
             display: block;
             margin-bottom: 8px;
             color: #333;
             font-weight: 600;
         }
-
-        .form-group input {
+        .form-group input, .form-group select {
             width: 100%;
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 16px;
-            transition: border-color 0.3s;
         }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
         }
-
         .listings-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 20px;
             margin-top: 20px;
         }
-
         .listing-card {
             background: white;
             padding: 20px;
             border-radius: 10px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-            transition: transform 0.2s;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            border-left: 5px solid #667eea;
         }
-
-        .listing-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        .badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin: 5px;
         }
-
-        .listing-card h3 {
-            color: #667eea;
-            margin-bottom: 15px;
-        }
-
-        .listing-info {
-            margin-bottom: 15px;
-        }
-
-        .listing-info p {
-            margin: 8px 0;
-            color: #666;
-        }
-
-        .listing-info strong {
-            color: #333;
-        }
-
-        .transactions-list {
-            margin-top: 20px;
-        }
-
-        .transaction-card {
-            background: white;
-            padding: 20px;
-            border-radius: 10px;
-            margin-bottom: 15px;
-            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .transaction-card h4 {
-            color: #667eea;
-            margin-bottom: 10px;
-        }
-
-        .transaction-details {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 10px;
-        }
-
-        .transaction-details p {
-            color: #666;
-            font-size: 0.9em;
-        }
-
+        .badge-solar { background: #ffd700; color: #000; }
+        .badge-wind { background: #00bfff; color: #fff; }
+        .badge-hydro { background: #1e90ff; color: #fff; }
+        .badge-biomass { background: #32cd32; color: #fff; }
+        .badge-geo { background: #ff6347; color: #fff; }
         .alert {
             padding: 15px;
             border-radius: 8px;
-            margin-bottom: 20px;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            max-width: 400px;
         }
-
-        .alert-success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-
-        .alert-error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-info {
-            background: #d1ecf1;
-            color: #0c5460;
-            border: 1px solid #bee5eb;
-        }
-
-        .loading {
-            text-align: center;
-            padding: 40px;
-            color: #667eea;
-            font-size: 1.2em;
-        }
-
-        .address-display {
-            font-family: monospace;
-            background: #f5f5f5;
-            padding: 10px;
-            border-radius: 5px;
-            word-break: break-all;
+        .alert-success { background: #d4edda; color: #155724; }
+        .alert-error { background: #f8d7da; color: #721c24; }
+        .loading { text-align: center; padding: 40px; color: #667eea; }
+        @media (max-width: 768px) {
+            .form-row { grid-template-columns: 1fr; }
+            .listings-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -280,21 +160,24 @@
     <div class="container">
         <div class="header">
             <h1>⚡ P2P Energy Trading Platform</h1>
-            <p>Decentralized Energy Marketplace powered by Blockchain</p>
+            <p>Optimized Smart Contract with Escrow & Reputation System</p>
         </div>
 
         <div class="wallet-section">
             <div id="walletStatus">
                 <button id="connectWallet" class="btn">Connect Wallet</button>
-                <p style="margin-top: 10px; color: #666;">Connect your MetaMask wallet to get started</p>
+                <p style="margin-top: 10px; color: #666;">Connect MetaMask to get started</p>
             </div>
             <div id="walletConnected" style="display: none;">
                 <div style="margin-bottom: 20px;">
-                    <strong>Connected Account:</strong>
-                    <div class="address-display" id="accountAddress"></div>
+                    <strong>Connected:</strong>
+                    <div style="font-family: monospace; background: #f5f5f5; padding: 10px; border-radius: 5px; word-break: break-all; font-size: 0.9em; margin-top: 5px;" id="accountAddress"></div>
                 </div>
                 <div class="stats-grid" id="userStats"></div>
-                <button id="getTokensBtn" class="btn btn-success" style="margin-top: 20px;">Get Initial Tokens (1000 ETG)</button>
+                <div style="margin-top: 20px;">
+                    <button id="registerBtn" class="btn btn-success" style="display: none;">Register Profile</button>
+                    <button id="getTokensBtn" class="btn btn-success" style="display: none;">Get 1000 ETG Tokens</button>
+                </div>
             </div>
         </div>
 
@@ -302,124 +185,196 @@
             <div class="tabs">
                 <button class="tab active" data-tab="marketplace">🛒 Marketplace</button>
                 <button class="tab" data-tab="list">📋 List Energy</button>
-                <button class="tab" data-tab="transactions">📊 My Transactions</button>
+                <button class="tab" data-tab="transactions">📊 Transactions</button>
+                <button class="tab" data-tab="escrows">🔒 Escrows</button>
             </div>
 
             <div id="marketplace" class="tab-content active">
-                <h2 style="margin-bottom: 20px; color: #333;">Available Energy Listings</h2>
-                <button id="refreshListings" class="btn">🔄 Refresh Listings</button>
+                <h2 style="margin-bottom: 20px; color: #333;">Energy Marketplace</h2>
+                <div style="margin-bottom: 20px;">
+                    <button class="btn btn-small" onclick="filterListings('ALL')">All</button>
+                    <button class="btn btn-small badge-solar" onclick="filterListings(0)">☀️ Solar</button>
+                    <button class="btn btn-small badge-wind" onclick="filterListings(1)">💨 Wind</button>
+                    <button class="btn btn-small badge-hydro" onclick="filterListings(2)">💧 Hydro</button>
+                    <button class="btn btn-small badge-biomass" onclick="filterListings(3)">🌱 Biomass</button>
+                    <button class="btn btn-small badge-geo" onclick="filterListings(4)">🌋 Geothermal</button>
+                </div>
+                <button id="refreshListings" class="btn">🔄 Refresh</button>
                 <div id="listingsContainer" class="listings-grid"></div>
             </div>
 
             <div id="list" class="tab-content">
                 <h2 style="margin-bottom: 20px; color: #333;">List Your Energy</h2>
                 <form id="listEnergyForm">
-                    <div class="form-group">
-                        <label>Energy Amount (kWh):</label>
-                        <input type="number" id="energyAmount" placeholder="e.g., 100" required min="1">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Energy Amount (kWh):</label>
+                            <input type="number" id="energyAmount" placeholder="100" required min="1">
+                        </div>
+                        <div class="form-group">
+                            <label>Price per kWh (ETG):</label>
+                            <input type="number" step="0.001" id="pricePerUnit" placeholder="5" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Energy Type:</label>
+                            <select id="energyType" required>
+                                <option value="0">☀️ Solar</option>
+                                <option value="1">💨 Wind</option>
+                                <option value="2">💧 Hydro</option>
+                                <option value="3">🌱 Biomass</option>
+                                <option value="4">🌋 Geothermal</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Min Purchase (kWh):</label>
+                            <input type="number" id="minPurchase" placeholder="10" required min="1">
+                        </div>
                     </div>
                     <div class="form-group">
-                        <label>Price per kWh (ETG tokens):</label>
-                        <input type="number" id="pricePerUnit" placeholder="e.g., 5" required min="1">
+                        <label>Carbon Offset (g CO₂/kWh):</label>
+                        <input type="number" id="carbonOffset" placeholder="500" required min="0">
                     </div>
                     <button type="submit" class="btn">List Energy for Sale</button>
                 </form>
             </div>
 
             <div id="transactions" class="tab-content">
-                <h2 style="margin-bottom: 20px; color: #333;">Transaction History</h2>
+                <h2 style="margin-bottom: 20px; color: #333;">My Transactions</h2>
                 <button id="refreshTransactions" class="btn">🔄 Refresh</button>
-                <div id="transactionsContainer" class="transactions-list"></div>
+                <div id="transactionsContainer" style="margin-top: 20px;"></div>
+            </div>
+
+            <div id="escrows" class="tab-content">
+                <h2 style="margin-bottom: 20px; color: #333;">Escrow Management</h2>
+                <div style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 4px solid #667eea;">
+                    <strong>🔒 Escrow Info:</strong> Funds held for 7 days for buyer protection.
+                </div>
+                <button id="refreshEscrows" class="btn">🔄 Refresh</button>
+                <div id="escrowsContainer" style="margin-top: 20px;"></div>
             </div>
         </div>
-
-        <div id="alertContainer"></div>
     </div>
 
-    <script>
-        let web3;
-        let contract;
-        let account;
-        
-        // Replace with your deployed contract address
-        const CONTRACT_ADDRESS = "0x3245869D42Db39D16349E0349fF64d853ad447Fc";
-        
-        // Contract ABI
-        const CONTRACT_ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"listingId","type":"uint256"},{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"}],"name":"EnergyListed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"transactionId","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"listingId","type":"uint256"},{"indexed":true,"internalType":"address","name":"consumer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"EnergyPurchased","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"listingId","type":"uint256"}],"name":"ListingCancelled","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"user","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"}],"name":"TokensReceived","type":"event"},{"inputs":[],"name":"INITIAL_TOKENS","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingId","type":"uint256"},{"internalType":"uint256","name":"_amount","type":"uint256"}],"name":"buyEnergy","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingId","type":"uint256"}],"name":"cancelListing","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"energyBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"energyListings","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"producer","type":"address"},{"internalType":"uint256","name":"energyAmount","type":"uint256"},{"internalType":"uint256","name":"pricePerUnit","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getActiveListings","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"address","name":"producer","type":"address"},{"internalType":"uint256","name":"energyAmount","type":"uint256"},{"internalType":"uint256","name":"pricePerUnit","type":"uint256"},{"internalType":"bool","name":"isActive","type":"bool"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"internalType":"struct EnergyTrading.EnergyListing[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getInitialTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserStats","outputs":[{"internalType":"uint256","name":"tokens","type":"uint256"},{"internalType":"uint256","name":"energy","type":"uint256"},{"internalType":"uint256","name":"listingsCreated","type":"uint256"},{"internalType":"uint256","name":"purchasesMade","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserTransactions","outputs":[{"components":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"uint256","name":"listingId","type":"uint256"},{"internalType":"address","name":"producer","type":"address"},{"internalType":"address","name":"consumer","type":"address"},{"internalType":"uint256","name":"energyAmount","type":"uint256"},{"internalType":"uint256","name":"totalPrice","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"internalType":"struct EnergyTrading.Transaction[]","name":"","type":"tuple[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_energyAmount","type":"uint256"},{"internalType":"uint256","name":"_pricePerUnit","type":"uint256"}],"name":"listEnergy","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"listingCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"tokenBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"transactionCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"transactions","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"uint256","name":"listingId","type":"uint256"},{"internalType":"address","name":"producer","type":"address"},{"internalType":"address","name":"consumer","type":"address"},{"internalType":"uint256","name":"energyAmount","type":"uint256"},{"internalType":"uint256","name":"totalPrice","type":"uint256"},{"internalType":"uint256","name":"timestamp","type":"uint256"}],"stateMutability":"view","type":"function"}];
+    <div id="alertContainer"></div>
 
-        // Initialize
+    <script>
+        let web3, contract, account;
+        let currentFilter = 'ALL';
+        
+        const CONTRACT_ADDRESS = "0x14451F1438B8660268BE830C8c0e89bB6e2938E5";
+        const ENERGY_TYPES = ['Solar', 'Wind', 'Hydro', 'Biomass', 'Geothermal'];
+        
+        const ABI = [{"inputs":[],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"txId","type":"uint256"},{"indexed":true,"internalType":"address","name":"raiser","type":"address"}],"name":"DisputeRaised","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"id","type":"uint256"},{"indexed":true,"internalType":"address","name":"producer","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"uint256","name":"price","type":"uint256"}],"name":"EnergyListed","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"txId","type":"uint256"},{"indexed":true,"internalType":"uint256","name":"listingId","type":"uint256"},{"indexed":true,"internalType":"address","name":"consumer","type":"address"}],"name":"EnergyPurchased","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"uint256","name":"escrowId","type":"uint256"},{"indexed":true,"internalType":"address","name":"seller","type":"address"}],"name":"EscrowReleased","type":"event"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"blacklisted","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"bool","name":"_status","type":"bool"}],"name":"blacklistUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingId","type":"uint256"},{"internalType":"uint128","name":"_amount","type":"uint128"}],"name":"buyEnergy","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingId","type":"uint256"}],"name":"cancelListing","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"energyBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"escrowCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"escrows","outputs":[{"internalType":"address","name":"buyer","type":"address"},{"internalType":"address","name":"seller","type":"address"},{"internalType":"uint128","name":"amount","type":"uint128"},{"internalType":"uint32","name":"releaseTime","type":"uint32"},{"internalType":"bool","name":"isReleased","type":"bool"},{"internalType":"bool","name":"isRefunded","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getActiveListings","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"enum EnergyTradingOptimized.EnergyType","name":"_type","type":"uint8"}],"name":"getListingsByType","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"getTokens","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserEscrows","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserStats","outputs":[{"internalType":"uint256","name":"tokens","type":"uint256"},{"internalType":"uint256","name":"energy","type":"uint256"},{"internalType":"uint32","name":"reputation","type":"uint32"},{"internalType":"uint32","name":"carbonCredits","type":"uint32"},{"internalType":"enum EnergyTradingOptimized.VerificationLevel","name":"level","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"}],"name":"getUserTransactions","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint128","name":"_amount","type":"uint128"},{"internalType":"uint128","name":"_price","type":"uint128"},{"internalType":"enum EnergyTradingOptimized.EnergyType","name":"_type","type":"uint8"},{"internalType":"uint32","name":"_minPurchase","type":"uint32"},{"internalType":"uint32","name":"_carbonOffset","type":"uint32"}],"name":"listEnergy","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"listingCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"listings","outputs":[{"internalType":"address","name":"producer","type":"address"},{"internalType":"uint128","name":"energyAmount","type":"uint128"},{"internalType":"uint128","name":"pricePerUnit","type":"uint128"},{"internalType":"enum EnergyTradingOptimized.EnergyType","name":"energyType","type":"uint8"},{"internalType":"uint32","name":"expiryDate","type":"uint32"},{"internalType":"uint32","name":"minPurchase","type":"uint32"},{"internalType":"uint32","name":"carbonOffset","type":"uint32"},{"internalType":"bool","name":"isActive","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"platformBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"profiles","outputs":[{"internalType":"enum EnergyTradingOptimized.VerificationLevel","name":"verificationLevel","type":"uint8"},{"internalType":"uint32","name":"reputationScore","type":"uint32"},{"internalType":"uint32","name":"registrationDate","type":"uint32"},{"internalType":"uint32","name":"carbonCredits","type":"uint32"},{"internalType":"bool","name":"isActive","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txId","type":"uint256"}],"name":"raiseDispute","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"register","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_escrowId","type":"uint256"}],"name":"releaseEscrow","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_txId","type":"uint256"},{"internalType":"bool","name":"_refund","type":"bool"}],"name":"resolveDispute","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"","type":"address"}],"name":"tokenBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"","type":"uint256"}],"name":"transactions","outputs":[{"internalType":"address","name":"producer","type":"address"},{"internalType":"address","name":"consumer","type":"address"},{"internalType":"uint128","name":"energyAmount","type":"uint128"},{"internalType":"uint128","name":"totalPrice","type":"uint128"},{"internalType":"uint32","name":"timestamp","type":"uint32"},{"internalType":"enum EnergyTradingOptimized.EnergyType","name":"energyType","type":"uint8"},{"internalType":"bool","name":"isDisputed","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"txCount","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_listingId","type":"uint256"},{"internalType":"uint128","name":"_newPrice","type":"uint128"}],"name":"updatePrice","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_user","type":"address"},{"internalType":"enum EnergyTradingOptimized.VerificationLevel","name":"_level","type":"uint8"}],"name":"verifyUser","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"withdrawFees","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+
         async function init() {
             if (typeof window.ethereum !== 'undefined') {
                 web3 = new Web3(window.ethereum);
-                document.getElementById('connectWallet').addEventListener('click', connectWallet);
-                document.getElementById('getTokensBtn').addEventListener('click', getInitialTokens);
-                document.getElementById('listEnergyForm').addEventListener('submit', listEnergy);
-                document.getElementById('refreshListings').addEventListener('click', loadListings);
-                document.getElementById('refreshTransactions').addEventListener('click', loadTransactions);
-                
-                // Tab switching
-                document.querySelectorAll('.tab').forEach(tab => {
-                    tab.addEventListener('click', () => switchTab(tab.dataset.tab));
-                });
+                setupListeners();
             } else {
-                showAlert('Please install MetaMask to use this application!', 'error');
+                showAlert('Please install MetaMask!', 'error');
             }
+        }
+
+        function setupListeners() {
+            document.getElementById('connectWallet').addEventListener('click', connectWallet);
+            document.getElementById('registerBtn').addEventListener('click', registerUser);
+            document.getElementById('getTokensBtn').addEventListener('click', getTokens);
+            document.getElementById('listEnergyForm').addEventListener('submit', listEnergy);
+            document.getElementById('refreshListings').addEventListener('click', loadListings);
+            document.getElementById('refreshTransactions').addEventListener('click', loadTransactions);
+            document.getElementById('refreshEscrows').addEventListener('click', loadEscrows);
+            
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => switchTab(tab.dataset.tab));
+            });
         }
 
         async function connectWallet() {
             try {
                 const accounts = await ethereum.request({ method: 'eth_requestAccounts' });
                 account = accounts[0];
-                
-                contract = new web3.eth.Contract(CONTRACT_ABI, CONTRACT_ADDRESS);
+                contract = new web3.eth.Contract(ABI, CONTRACT_ADDRESS);
                 
                 document.getElementById('walletStatus').style.display = 'none';
                 document.getElementById('walletConnected').style.display = 'block';
-                document.getElementById('mainContent').style.display = 'block';
                 document.getElementById('accountAddress').textContent = account;
                 
-                await loadUserStats();
-                await loadListings();
-                
-                showAlert('Wallet connected successfully!', 'success');
+                await checkRegistration();
+                showAlert('Wallet connected!', 'success');
             } catch (error) {
-                showAlert('Error connecting wallet: ' + error.message, 'error');
+                showAlert('Error: ' + error.message, 'error');
             }
         }
 
-        async function getInitialTokens() {
+        async function checkRegistration() {
             try {
-                await contract.methods.getInitialTokens().send({ from: account });
-                showAlert('Successfully received 1000 ETG tokens!', 'success');
-                await loadUserStats();
+                const profile = await contract.methods.profiles(account).call();
+                
+                if (profile.registrationDate == 0) {
+                    document.getElementById('registerBtn').style.display = 'inline-block';
+                } else {
+                    document.getElementById('mainContent').style.display = 'block';
+                    const balance = await contract.methods.tokenBalance(account).call();
+                    if (balance == 0) {
+                        document.getElementById('getTokensBtn').style.display = 'inline-block';
+                    }
+                    await loadStats();
+                    await loadListings();
+                }
             } catch (error) {
-                showAlert('Error getting tokens: ' + error.message, 'error');
+                console.error('Check registration error:', error);
             }
         }
 
-        async function loadUserStats() {
+        async function registerUser() {
+            try {
+                await contract.methods.register().send({ from: account });
+                showAlert('Registered successfully!', 'success');
+                document.getElementById('registerBtn').style.display = 'none';
+                document.getElementById('getTokensBtn').style.display = 'inline-block';
+                document.getElementById('mainContent').style.display = 'block';
+                await loadStats();
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function getTokens() {
+            try {
+                await contract.methods.getTokens().send({ from: account });
+                showAlert('Received 1000 ETG tokens!', 'success');
+                document.getElementById('getTokensBtn').style.display = 'none';
+                await loadStats();
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function loadStats() {
             try {
                 const stats = await contract.methods.getUserStats(account).call();
                 document.getElementById('userStats').innerHTML = `
                     <div class="stat-card">
-                        <h3>${web3.utils.fromWei(stats.tokens, 'ether')}</h3>
+                        <h3>${parseFloat(web3.utils.fromWei(stats.tokens, 'ether')).toFixed(2)}</h3>
                         <p>ETG Tokens</p>
                     </div>
                     <div class="stat-card">
                         <h3>${stats.energy}</h3>
-                        <p>Energy Owned (kWh)</p>
+                        <p>Energy (kWh)</p>
                     </div>
                     <div class="stat-card">
-                        <h3>${stats.listingsCreated}</h3>
-                        <p>Listings Created</p>
+                        <h3>${stats.reputation}</h3>
+                        <p>Reputation</p>
                     </div>
                     <div class="stat-card">
-                        <h3>${stats.purchasesMade}</h3>
-                        <p>Purchases Made</p>
+                        <h3>${stats.carbonCredits}</h3>
+                        <p>Carbon Credits</p>
                     </div>
                 `;
             } catch (error) {
-                console.error('Error loading stats:', error);
+                console.error('Load stats error:', error);
             }
         }
 
@@ -428,126 +383,244 @@
             try {
                 const amount = document.getElementById('energyAmount').value;
                 const price = web3.utils.toWei(document.getElementById('pricePerUnit').value, 'ether');
+                const type = document.getElementById('energyType').value;
+                const minPurchase = document.getElementById('minPurchase').value;
+                const carbonOffset = document.getElementById('carbonOffset').value;
                 
-                await contract.methods.listEnergy(amount, price).send({ from: account });
+                await contract.methods.listEnergy(amount, price, type, minPurchase, carbonOffset).send({ from: account });
                 showAlert('Energy listed successfully!', 'success');
-                
                 document.getElementById('listEnergyForm').reset();
                 await loadListings();
-                await loadUserStats();
+                await loadStats();
             } catch (error) {
-                showAlert('Error listing energy: ' + error.message, 'error');
+                showAlert('Error: ' + error.message, 'error');
             }
         }
 
         async function loadListings() {
             try {
-                const listings = await contract.methods.getActiveListings().call();
+                let listingIds;
+                if (currentFilter === 'ALL') {
+                    listingIds = await contract.methods.getActiveListings().call();
+                } else {
+                    listingIds = await contract.methods.getListingsByType(currentFilter).call();
+                }
+                
                 const container = document.getElementById('listingsContainer');
                 
-                if (listings.length === 0) {
-                    container.innerHTML = '<p class="loading">No active listings available</p>';
+                if (listingIds.length === 0) {
+                    container.innerHTML = '<p class="loading">No listings available</p>';
                     return;
                 }
                 
-                container.innerHTML = listings.map(listing => `
-                    <div class="listing-card">
-                        <h3>Listing #${listing.id}</h3>
-                        <div class="listing-info">
-                            <p><strong>Producer:</strong> ${listing.producer.substring(0, 10)}...</p>
-                            <p><strong>Energy:</strong> ${listing.energyAmount} kWh</p>
-                            <p><strong>Price:</strong> ${web3.utils.fromWei(listing.pricePerUnit, 'ether')} ETG/kWh</p>
-                            <p><strong>Total Cost:</strong> ${(listing.energyAmount * web3.utils.fromWei(listing.pricePerUnit, 'ether')).toFixed(2)} ETG</p>
+                let html = '';
+                for (const id of listingIds) {
+                    const listing = await contract.methods.listings(id).call();
+                    const badge = getEnergyBadge(listing.energyType);
+                    const isOwner = listing.producer.toLowerCase() === account.toLowerCase();
+                    const price = parseFloat(web3.utils.fromWei(listing.pricePerUnit.toString(), 'ether')).toFixed(3);
+                    const totalCost = (listing.energyAmount * price).toFixed(2);
+                    const fee = (totalCost * 0.02).toFixed(2);
+                    
+                    html += `
+                        <div class="listing-card">
+                            <div style="display: flex; justify-content: space-between;">
+                                <h3>Listing #${id}</h3>
+                                ${badge}
+                            </div>
+                            <div style="margin: 15px 0;">
+                                <p><strong>Producer:</strong> ${listing.producer.substring(0, 15)}...</p>
+                                <p><strong>Energy:</strong> ${listing.energyAmount} kWh</p>
+                                <p><strong>Price:</strong> ${price} ETG/kWh</p>
+                                <p><strong>Min Purchase:</strong> ${listing.minPurchase} kWh</p>
+                                <p><strong>Total:</strong> ${totalCost} ETG (+ ${fee} fee)</p>
+                                <p><strong>Carbon:</strong> ${listing.carbonOffset}g CO₂/kWh</p>
+                            </div>
+                            ${isOwner 
+                                ? `<button class="btn btn-secondary btn-small" onclick="cancelListing(${id})">Cancel</button>`
+                                : `<button class="btn btn-small" onclick="buyEnergy(${id}, ${listing.energyAmount}, ${listing.minPurchase})">Buy</button>`
+                            }
                         </div>
-                        ${listing.producer.toLowerCase() === account.toLowerCase() 
-                            ? '<button class="btn btn-secondary" onclick="cancelListing(' + listing.id + ')">Cancel Listing</button>'
-                            : '<button class="btn" onclick="buyEnergy(' + listing.id + ', ' + listing.energyAmount + ')">Buy Energy</button>'
-                        }
-                    </div>
-                `).join('');
+                    `;
+                }
+                container.innerHTML = html;
             } catch (error) {
                 showAlert('Error loading listings: ' + error.message, 'error');
             }
         }
 
-        async function buyEnergy(listingId, maxAmount) {
-            const amount = prompt(`Enter amount to buy (max ${maxAmount} kWh):`);
-            if (!amount || amount <= 0 || amount > maxAmount) return;
+        async function buyEnergy(listingId, maxAmount, minAmount) {
+            const amount = prompt(`Enter amount (${minAmount}-${maxAmount} kWh):`);
+            if (!amount || amount < minAmount || amount > maxAmount) return;
             
             try {
                 await contract.methods.buyEnergy(listingId, amount).send({ from: account });
-                showAlert('Energy purchased successfully!', 'success');
+                showAlert('Energy purchased! Funds in escrow for 7 days.', 'success');
                 await loadListings();
-                await loadUserStats();
+                await loadStats();
             } catch (error) {
-                showAlert('Error buying energy: ' + error.message, 'error');
+                showAlert('Error: ' + error.message, 'error');
             }
         }
 
         async function cancelListing(listingId) {
-            if (!confirm('Are you sure you want to cancel this listing?')) return;
-            
+            if (!confirm('Cancel this listing?')) return;
             try {
                 await contract.methods.cancelListing(listingId).send({ from: account });
-                showAlert('Listing cancelled successfully!', 'success');
+                showAlert('Listing cancelled!', 'success');
                 await loadListings();
-                await loadUserStats();
             } catch (error) {
-                showAlert('Error cancelling listing: ' + error.message, 'error');
+                showAlert('Error: ' + error.message, 'error');
             }
         }
 
         async function loadTransactions() {
             try {
-                const transactions = await contract.methods.getUserTransactions(account).call();
+                const txIds = await contract.methods.getUserTransactions(account).call();
                 const container = document.getElementById('transactionsContainer');
                 
-                if (transactions.length === 0) {
-                    container.innerHTML = '<p class="loading">No transactions found</p>';
+                if (txIds.length === 0) {
+                    container.innerHTML = '<p class="loading">No transactions</p>';
                     return;
                 }
                 
-                container.innerHTML = transactions.map(tx => `
-                    <div class="transaction-card">
-                        <h4>Transaction #${tx.id}</h4>
-                        <div class="transaction-details">
-                            <p><strong>Type:</strong> ${tx.producer.toLowerCase() === account.toLowerCase() ? 'Sale' : 'Purchase'}</p>
-                            <p><strong>Energy:</strong> ${tx.energyAmount} kWh</p>
-                            <p><strong>Price:</strong> ${web3.utils.fromWei(tx.totalPrice, 'ether')} ETG</p>
-                            <p><strong>Date:</strong> ${new Date(tx.timestamp * 1000).toLocaleString()}</p>
-                            <p><strong>Producer:</strong> ${tx.producer.substring(0, 20)}...</p>
-                            <p><strong>Consumer:</strong> ${tx.consumer.substring(0, 20)}...</p>
+                let html = '';
+                for (const id of txIds) {
+                    const tx = await contract.methods.transactions(id).call();
+                    const badge = getEnergyBadge(tx.energyType);
+                    const isProducer = tx.producer.toLowerCase() === account.toLowerCase();
+                    const price = parseFloat(web3.utils.fromWei(tx.totalPrice.toString(), 'ether')).toFixed(2);
+                    
+                    html += `
+                        <div class="listing-card" style="border-left-color: ${tx.isDisputed ? '#f5576c' : '#4facfe'}">
+                            <div style="display: flex; justify-content: space-between;">
+                                <h3>TX #${id}</h3>
+                                ${badge}
+                            </div>
+                            <div style="margin: 15px 0;">
+                                <p><strong>Type:</strong> ${isProducer ? '📤 Sale' : '📥 Purchase'}</p>
+                                <p><strong>Energy:</strong> ${tx.energyAmount} kWh</p>
+                                <p><strong>Price:</strong> ${price} ETG</p>
+                                <p><strong>Date:</strong> ${new Date(tx.timestamp * 1000).toLocaleDateString()}</p>
+                                <p><strong>Status:</strong> ${tx.isDisputed ? '⚠️ Disputed' : '✓ Complete'}</p>
+                            </div>
+                            ${!tx.isDisputed ? 
+                                `<button class="btn btn-secondary btn-small" onclick="raiseDispute(${id})">Raise Dispute</button>` : 
+                                '<p style="color: #f5576c;">Under review by platform</p>'
+                            }
                         </div>
-                    </div>
-                `).join('');
+                    `;
+                }
+                container.innerHTML = html;
             } catch (error) {
                 showAlert('Error loading transactions: ' + error.message, 'error');
             }
         }
 
+        async function raiseDispute(txId) {
+            if (!confirm('Raise dispute for this transaction?')) return;
+            try {
+                await contract.methods.raiseDispute(txId).send({ from: account });
+                showAlert('Dispute raised!', 'success');
+                await loadTransactions();
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
+        async function loadEscrows() {
+            try {
+                const escrowIds = await contract.methods.getUserEscrows(account).call();
+                const container = document.getElementById('escrowsContainer');
+                
+                if (escrowIds.length === 0) {
+                    container.innerHTML = '<p class="loading">No escrows</p>';
+                    return;
+                }
+                
+                let html = '';
+                for (const id of escrowIds) {
+                    const escrow = await contract.methods.escrows(id).call();
+                    const isBuyer = escrow.buyer.toLowerCase() === account.toLowerCase();
+                    const amount = parseFloat(web3.utils.fromWei(escrow.amount.toString(), 'ether')).toFixed(2);
+                    const releaseDate = new Date(escrow.releaseTime * 1000).toLocaleString();
+                    const canRelease = Date.now() >= escrow.releaseTime * 1000 || isBuyer;
+                    const status = escrow.isReleased ? 'Released' : escrow.isRefunded ? 'Refunded' : 'Pending';
+                    
+                    html += `
+                        <div class="listing-card">
+                            <h3>Escrow #${id}</h3>
+                            <div style="margin: 15px 0;">
+                                <p><strong>Role:</strong> ${isBuyer ? 'Buyer' : 'Seller'}</p>
+                                <p><strong>Amount:</strong> ${amount} ETG</p>
+                                <p><strong>Status:</strong> ${status}</p>
+                                <p><strong>Release:</strong> ${releaseDate}</p>
+                            </div>
+                            ${!escrow.isReleased && !escrow.isRefunded && canRelease ? 
+                                `<button class="btn btn-success btn-small" onclick="releaseEscrow(${id})">
+                                    ${isBuyer ? 'Release Early' : 'Claim Funds'}
+                                </button>` : ''
+                            }
+                        </div>
+                    `;
+                }
+                container.innerHTML = html;
+            } catch (error) {
+                showAlert('Error loading escrows: ' + error.message, 'error');
+            }
+        }
+
+        async function releaseEscrow(escrowId) {
+            try {
+                await contract.methods.releaseEscrow(escrowId).send({ from: account });
+                showAlert('Escrow released!', 'success');
+                await loadEscrows();
+                await loadStats();
+            } catch (error) {
+                showAlert('Error: ' + error.message, 'error');
+            }
+        }
+
         function switchTab(tabName) {
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
             
             document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
             document.getElementById(tabName).classList.add('active');
             
             if (tabName === 'marketplace') loadListings();
             if (tabName === 'transactions') loadTransactions();
+            if (tabName === 'escrows') loadEscrows();
+        }
+
+        function filterListings(type) {
+            currentFilter = type;
+            loadListings();
+        }
+
+        function getEnergyBadge(type) {
+            const badges = [
+                '<span class="badge badge-solar">☀️ Solar</span>',
+                '<span class="badge badge-wind">💨 Wind</span>',
+                '<span class="badge badge-hydro">💧 Hydro</span>',
+                '<span class="badge badge-biomass">🌱 Biomass</span>',
+                '<span class="badge badge-geo">🌋 Geothermal</span>'
+            ];
+            return badges[type] || badges[0];
         }
 
         function showAlert(message, type) {
-            const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type}`;
-            alertDiv.textContent = message;
+            const div = document.createElement('div');
+            div.className = `alert alert-${type}`;
+            div.textContent = message;
             
             const container = document.getElementById('alertContainer');
-            container.appendChild(alertDiv);
+            container.innerHTML = '';
+            container.appendChild(div);
             
-            setTimeout(() => alertDiv.remove(), 5000);
+            setTimeout(() => div.remove(), 5000);
         }
 
-        // Initialize on page load
         window.addEventListener('load', init);
     </script>
 </body>
